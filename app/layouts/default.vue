@@ -28,25 +28,25 @@
         <!-- Sidebar Menu -->
         <v-list density="compact" nav>
           <v-list-item
-            prepend-icon="mdi-view-dashboard"
+            prepend-icon="mdi-view-dashboard-edit"
             title="Dashboard"
             to="/"
             value="Dashboard"
           />
           <v-list-item
-            prepend-icon="mdi-clipboard-list-outline"
+            prepend-icon="mdi-clipboard-list"
             title="Inventory"
             value="shared"
             to="/inventory"
           />
           <v-list-item
-            prepend-icon="mdi-shape-outline"
+            prepend-icon="mdi-shape"
             title="Categories"
             to="/categories"
             value="Categories"
           />
           <v-list-item
-            prepend-icon="mdi-truck-outline"
+            prepend-icon="mdi-truck-delivery"
             title="Suppliers"
             to="/suppliers"
             value="Suppliers"

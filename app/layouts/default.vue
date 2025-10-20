@@ -10,8 +10,8 @@
       >
         <v-list>
           <v-list-item
-            prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-            title="John Leider"
+            prepend-avatar="https://media.tenor.com/n15TsLOvpRcAAAAe/alden-richards-alden-dila.png"
+            title="Mark Casilang"
           >
             <template #append>
               <v-btn
@@ -25,22 +25,47 @@
 
         <v-divider />
 
+        <!-- Sidebar Menu -->
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" value="dashboard" />
-          <v-list-item prepend-icon="mdi-list-box" title="Inventory" value="inventory" />
-          <v-list-item prepend-icon="mdi-shape" title="Categories" value="categories" />
-          <v-list-item prepend-icon="mdi-truck  " title="Suppliers" value="suppliers" />
+          <v-list-item
+            prepend-icon="mdi-view-dashboard"
+            title="Dashboard"
+            to="/"
+            value="Dashboard"
+          />
+          <v-list-item
+            prepend-icon="mdi-clipboard-list-outline"
+            title="Inventory"
+            value="shared"
+            to="/inventory"
+          />
+          <v-list-item
+            prepend-icon="mdi-shape-outline"
+            title="Categories"
+            to="/categories"
+            value="Categories"
+          />
+          <v-list-item
+            prepend-icon="mdi-truck-outline"
+            title="Suppliers"
+            to="/suppliers"
+            value="Suppliers"
+          />
         </v-list>
       </v-navigation-drawer>
 
       <!-- Main Content -->
       <v-main>
-        <!-- Top App Bar -->
-        <v-app-bar flat color="white" elevation="1" height="72">
+        <!-- App Bar -->
+        <v-app-bar color="white" elevation="1" height="72">
+          <v-app-bar-nav-icon @click.stop="rail = !rail"></v-app-bar-nav-icon>
           <v-app-bar-title class="text-black">Application Bar</v-app-bar-title>
+
+          <v-spacer></v-spacer>
+
         </v-app-bar>
 
-        <!-- Page Content -->
+        <!-- Dynamic Page Content -->
         <v-container class="mt-4">
           <NuxtPage />
         </v-container>
@@ -51,7 +76,6 @@
 
 <script setup>
 import { ref } from 'vue'
-
 const drawer = ref(true)
 const rail = ref(true)
 </script>

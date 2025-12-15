@@ -1,124 +1,176 @@
-<!-- <template>
+<template>
   <v-container>
     <h2 class="text-h5 mb-4">Books</h2>
-    <v-btn color="green" class="mb-4" to="/books/create">Add Book</v-btn>
 
-    <v-data-table :headers="headers" :items="books">
-      <template #["item.actions"]="{ item }">
-        <v-btn size="small" @click="view(item.id)">View</v-btn>
-        <v-btn size="small" color="blue" @click="edit(item.id)">Edit</v-btn>
-        <v-btn size="small" color="red" @click="remove(item.id)">Delete</v-btn>
+    <v-btn color="blue" class="mb-4" @click="goCreate">
+      <b>+</b>Add Book
+    </v-btn>
+
+    <v-data-table
+      :headers="headers"
+      :items="books"
+      item-key="id"
+      class="modern-table"
+      density="comfortable"
+      hover
+    >
+      <template #item.title="{ item }">
+        {{ item.title }}
+      </template>
+      <template #item.author="{ item }">
+        {{ item.author }}
+      </template>
+      <template #item.published_date="{ item }">
+        {{ item.published_date }}
+      </template>
+      <template #item.book_status="{ item }">
+        {{ item.book_status }}
+      </template>
+      <template #item.actions="{ item }">
+        <div class="d-flex gap-3">
+          <v-btn 
+            size="small" 
+            variant="tonal" 
+            color="primary"
+            icon="mdi-eye"
+            @click="view(item)"
+          >
+            <v-icon>mdi-eye</v-icon>
+            <v-tooltip activator="parent" location="top">View</v-tooltip>
+          </v-btn>
+          <v-btn 
+            size="small" 
+            variant="tonal" 
+            color="blue"
+            icon="mdi-pencil"
+            @click="edit(item)"
+          >
+            <v-icon>mdi-pencil</v-icon>
+            <v-tooltip activator="parent" location="top">Edit</v-tooltip>
+          </v-btn>
+          <v-btn 
+            size="small" 
+            variant="tonal" 
+            color="red"
+            icon="mdi-delete"
+            @click="remove(item.documentId)"
+          >
+            <v-icon>mdi-delete</v-icon>
+            <v-tooltip activator="parent" location="top">Delete</v-tooltip>
+          </v-btn>
+        </div>
       </template>
     </v-data-table>
-    
 
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" top>
-      {{ snackbar.message }}
+    <v-snackbar
+      v-model="snackbar"
+      color="primary"
+      variant="flat"
+      location="top end"
+      elevation="10"
+      rounded="lg"
+      timeout="2800"
+    >
+      <div class="d-flex align-center gap-2">
+        <v-icon color="white" size="20">mdi-check-circle</v-icon>
+        <span class="text-body-2 text-white">{{ message }}</span>
+      </div>
       <template #actions>
-        <v-btn text @click="snackbar.show = false">Close</v-btn>
+        <v-btn icon variant="text" density="comfortable" @click="snackbar = false">
+          <v-icon color="white">mdi-close</v-icon>
+        </v-btn>
       </template>
     </v-snackbar>
   </v-container>
-</template> -->
+</template>
 
-<!-- <script setup>
-import { ref, onMounted } from 'vue'
+<style scoped>
+.modern-table {
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
 
-const config = useRuntimeConfig()
-const baseUrl = config.public.strapiBaseUrl
-const token = config.public.strapiToken
+.modern-table :deep(thead th) {
+  background: linear-gradient(120deg, #0f172a, #111827);
+  color: #e2e8f0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.modern-table :deep(tbody tr:hover) {
+  background-color: #f8fafc;
+}
+
+.modern-table :deep(tbody td) {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modern-table :deep(.v-table__wrapper) {
+  background: #fff;
+}
+
+.text-white {
+  color: #fff;
+}
+</style>
+
+<script setup>
+import { ref, onMounted, onActivated } from 'vue'
 
 const books = ref([])
-const snackbar = ref({ show: false, message: '', color: 'success' })
+const snackbar = ref(false)
+const message = ref('')
 
 const headers = [
   { title: 'ID', key: 'id' },
   { title: 'Title', key: 'title' },
   { title: 'Author', key: 'author' },
-  { title: 'Actions', key: 'actions', sortable: false },
+  { title: 'Published Date', key: 'published_date' },
+  { title: 'Status', key: 'book_status' },
+  { title: 'Actions', key: 'actions', sortable: false }
 ]
 
-const fetchBooks = async () => {
-  try {
-    const res = await $fetch(`${baseUrl}/api/books`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    books.value = res.data.map(b => ({ id: b.id, ...b.attributes }))
-  } catch (err) {
-    console.error('Fetch books error:', err)
-  }
+const getBooks = async () => {
+  const res = await $fetch('http://localhost:1337/api/books')
+
+  books.value = res.data.map(b => ({
+    id: b.id,
+    documentId: b.documentId,
+    title: b.title,
+    author: b.author,
+    published_date: b.published_date,
+    book_status: b.book_status
+  }))
 }
 
-const view = id => navigateTo(`/books/${id}`)
-const edit = id => navigateTo(`/books/${id}?edit=true`)
+const goCreate = () => navigateTo('/books/create')
+const view = item => navigateTo(`/books/${item.documentId}`)
+const edit = item => navigateTo(`/books/${item.documentId}?edit=true`)
 
 const remove = async id => {
   if (!confirm('Delete this book?')) return
+
   try {
-    await $fetch(`${baseUrl}/api/books/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` }
+    console.log('Deleting book with ID:', id)
+    await $fetch(`http://localhost:1337/api/books/${id}`, {
+      method: 'DELETE'
     })
-    snackbar.value = { show: true, message: 'Book deleted successfully', color: 'red' }
-    await fetchBooks()
-  } catch (err) {
-    snackbar.value = { show: true, message: 'Error deleting book', color: 'red' }
+    
+    message.value = 'Book deleted successfully'
+    snackbar.value = true
+    await getBooks()
+  } catch (error) {
+    console.error('Error deleting book:', error)
+    alert('Error deleting book: ' + error.message)
   }
 }
 
-onMounted(fetchBooks)
-</script> -->
+onMounted(() => {
+  getBooks()
+})
 
-<template>
-  <div>
-    <h1>Books</h1>
-
-    <v-data-table 
-    :headers="headers"
-    :items="books"
-    ></v-data-table>
-
-
-  </div>
-</template>
-
-<script setup>
-
-const headers = [
-
-  { title : "ID", value: "id" },
-  { title : "Title", value: "title" },
-  { title : "Author", value: "author" },
-  { title : "Publisher Date", value: "publisher_date" },
-  { title : "Book Status", value: "book_status" },
-  { title : "Created At", value: "createdAt" },
-];
-
-const books = ref ([]);
-
-const getBooks = async () => {
-  const res = await $fetch('http://localhost:1337/api/books', {
-   
-  }).catch((err) => {
-    console.log(err);
-    return null;
-  });
-
-  if (res) {
-    books.value = res.data
-    console.log(res);
-  } else {
-
-    console.log("error loading suppliers")
-  }
-}
-
-
-onMounted(async () => {
-  await getBooks()
+onActivated(() => {
+  getBooks()
 })
 </script>
-
-<style>
-
-</style>

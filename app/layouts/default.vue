@@ -55,6 +55,8 @@
         <v-app-bar color="white" elevation="1">
           <v-app-bar-nav-icon @click="rail = !rail" />
           <v-app-bar-title>Library Management System</v-app-bar-title>
+          <v-spacer />
+          <v-btn icon="mdi-logout" @click="handleLogout" title="Logout" />
         </v-app-bar>
 
         <v-container class="mt-4">
@@ -70,4 +72,10 @@ import { ref } from 'vue'
 
 const drawer = ref(true)
 const rail = ref(true)
+
+const handleLogout = () => {
+  localStorage.removeItem('isAuthenticated')
+  localStorage.removeItem('userEmail')
+  navigateTo('/login')
+}
 </script>

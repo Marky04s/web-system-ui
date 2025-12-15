@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-container>
     <h2 class="text-h5 mb-4">Borrowers</h2>
     <v-btn color="green" class="mb-4" to="/borrowers/create">Add Borrower</v-btn>
@@ -45,4 +45,56 @@ const remove = async id => {
 }
 
 onMounted(fetchBorrowers)
+</script> -->
+<template>
+  <div>
+    <h1>Borrowers</h1>
+
+    <v-data-table 
+    :headers="headers"
+    :items="borrowers"
+    ></v-data-table>
+
+
+  </div>
+</template>
+
+<script setup>
+
+const headers = [
+
+  { title : "ID", value: "id" },
+  { title : "Name", value: "name" },
+  { title : "Email", value: "email" },
+  { title : "Contact", value: "contact" },
+  { title : "Created At", value: "createdAt" },
+];
+
+const borrowers = ref ([]);
+
+const getBorrowers = async () => {
+  const res = await $fetch('http://localhost:1337/api/borrowers', {
+   
+  }).catch((err) => {
+    console.log(err);
+    return null;
+  });
+
+  if (res) {
+    borrowers.value = res.data
+    console.log(res);
+  } else {
+
+    console.log("error loading suppliers")
+  }
+}
+
+
+onMounted(async () => {
+  await getBorrowers()
+})
 </script>
+
+<style>
+
+</style>

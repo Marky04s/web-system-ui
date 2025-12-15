@@ -20,6 +20,12 @@ export default defineNuxtConfig({
         transformAssetUrls,
       },
     },
+
+  },
+  runtimeConfig:{
+    public:{
+      strapiBaseURL: "http://localhost:1337/",
+    },
   },
 })
 

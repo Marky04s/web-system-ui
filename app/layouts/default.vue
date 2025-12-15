@@ -30,18 +30,21 @@
           <v-list-item
             prepend-icon="mdi-book"
             title="Books"
+            value="Books"
             to="/books"
           />
 
           <v-list-item
             prepend-icon="mdi-account-group"
             title="Borrowers"
+            value="Borrowers"
             to="/borrowers"
           />
 
           <v-list-item
             prepend-icon="mdi-swap-horizontal"
             title="Transactions"
+            value="Transactions"
             to="/transactions"
           />
         </v-list>

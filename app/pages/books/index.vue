@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-container>
     <h2 class="text-h5 mb-4">Books</h2>
     <v-btn color="green" class="mb-4" to="/books/create">Add Book</v-btn>
@@ -10,6 +10,7 @@
         <v-btn size="small" color="red" @click="remove(item.id)">Delete</v-btn>
       </template>
     </v-data-table>
+    
 
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" top>
       {{ snackbar.message }}
@@ -18,9 +19,9 @@
       </template>
     </v-snackbar>
   </v-container>
-</template>
+</template> -->
 
-<script setup>
+<!-- <script setup>
 import { ref, onMounted } from 'vue'
 
 const config = useRuntimeConfig()
@@ -66,4 +67,58 @@ const remove = async id => {
 }
 
 onMounted(fetchBooks)
+</script> -->
+
+<template>
+  <div>
+    <h1>Books</h1>
+
+    <v-data-table 
+    :headers="headers"
+    :items="books"
+    ></v-data-table>
+
+
+  </div>
+</template>
+
+<script setup>
+
+const headers = [
+
+  { title : "ID", value: "id" },
+  { title : "Title", value: "title" },
+  { title : "Author", value: "author" },
+  { title : "Publisher Date", value: "publisher_date" },
+  { title : "Book Status", value: "book_status" },
+  { title : "Created At", value: "createdAt" },
+];
+
+const books = ref ([]);
+
+const getBooks = async () => {
+  const res = await $fetch('http://localhost:1337/api/books', {
+   
+  }).catch((err) => {
+    console.log(err);
+    return null;
+  });
+
+  if (res) {
+    books.value = res.data
+    console.log(res);
+  } else {
+
+    console.log("error loading suppliers")
+  }
+}
+
+
+onMounted(async () => {
+  await getBooks()
+})
 </script>
+
+<style>
+
+</style>

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-container>
     <h2 class="text-h5 mb-4">Transactions</h2>
     <v-btn color="green" class="mb-4" to="/transactions/create">Add Transaction</v-btn>
@@ -47,4 +47,55 @@ const remove = async id => {
 }
 
 onMounted(fetchTransactions)
+</script> -->
+
+<template>
+  <div>
+    <h1>Transaction</h1>
+
+    <v-data-table 
+    :headers="headers"
+    :items="transactions"
+    ></v-data-table>
+
+
+  </div>
+</template>
+
+<script setup>
+
+const headers = [
+
+  { title : "Transaction Date", value: "transaction_date" },
+  { title : "Transaction_Status", value: "transaction_status" },
+  { title : "Created At", value: "createdAt" },
+];
+
+const transactions = ref ([]);
+
+const getTransactions = async () => {
+  const res = await $fetch('http://localhost:1337/api/transactions', {
+   
+  }).catch((err) => {
+    console.log(err);
+    return null;
+  });
+
+  if (res) {
+    transactions.value = res.data
+    console.log(res);
+  } else {
+
+    console.log("error loading suppliers")
+  }
+}
+
+
+onMounted(async () => {
+  await getTransactions()
+})
 </script>
+
+<style>
+
+</style>
